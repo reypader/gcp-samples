@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+</head>
+<body ng-app="autocompleteDemo" ng-cloak>
+<!--
+  Your HTML content here
+-->
+<div ng-controller="DemoCtrl as ctrl" layout="column" ng-cloak>
+    <md-content class="md-padding">
+        <form ng-submit="$event.preventDefault()">
+            <md-autocomplete
+                    ng-disabled="ctrl.isDisabled"
+                    md-selected-item="ctrl.selectedItem"
+                    md-search-text="ctrl.searchText"
+                    md-selected-item-change="ctrl.selectedItemChange(item)"
+                    md-items="item in ctrl.querySearch(ctrl.searchText)"
+                    md-item-text="item.name"
+                    md-min-length="0"
+                    ng-model-options="{ debounce: 150 }"
+                    placeholder="Product name">
+                <md-item-template>
+                    <a href="{{item.url}}" style="text-decoration: none; color:black">
+                        <div style="display: flex;  align-items: center;">
+                            <img src="{{item.image}}" height="42" width="42" style="object-fit: contain"/>
+                            <span style="line-height:42px" md-highlight-text="ctrl.searchText" md-highlight-flags="i">{{item.name}}</span>
+                        </div>
+                    </a>
+                </md-item-template>
+                <md-not-found>
+                    No product matching "{{ctrl.searchText}}" were found.
+                </md-not-found>
+            </md-autocomplete>
+        </form>
+    </md-content>
+</div>
+
+<!-- Angular Material requires Angular.js Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+<!-- Angular Material Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+<!-- Your application bootstrap  -->
+<script type="text/javascript">
+    /**
+     * You must include the dependency on 'ngMaterial'
+     */
+    (function () {
+        'use strict';
+        angular
+            .module('autocompleteDemo', ['ngMaterial'])
+            .controller('DemoCtrl', DemoCtrl);
+
+        function DemoCtrl($http, $q) {
+            var self = this;
+            self.items = []
+            self.isDisabled = false;
+            self.selectedItemChange = selectedItemChange;
+            self.querySearch = querySearch;
+
+            self.newState = newState;
+
+            function newState(state) {
+                alert("Sorry! You'll need to create a Constitution for " + state + " first!");
+            }
+
+            function querySearch(query) {
+                var x = $q.defer();
+                if (query) {
+                    $http.get('http://rmp-sandbox.appspot.com/search?q=' + query).then(function (result) {
+                        x.resolve(result.data.result)
+                    });
+                } else {
+                    x.resolve([])
+                }
+                return x.promise;
+            }
+
+            function selectedItemChange(item) {
+//                window.location = item.url
+            }
+
+
+        }
+    })();
+</script>
+
+</body>
+</html>
