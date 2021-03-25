@@ -40,7 +40,7 @@ proto-google-cloud-pubsub-v1==0.15.4
 protobuf==3.3.0
 pyasn1==0.4.2
 pyasn1-modules==0.2.1
-PyYAML==3.12
+PyYAML==5.4
 requests==2.18.4
 rsa==3.4.2
 six==1.10.0
